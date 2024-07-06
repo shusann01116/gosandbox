@@ -16,10 +16,10 @@ func NewController(svc Service) Controller {
 	}
 }
 
-func (tc *Controller) GetTodos(c *gin.Context) {
-	todos, err := tc.todoService.GetTodos()
+func (c *Controller) GetTodos(ctx *gin.Context) {
+	todos, err := c.todoService.GetTodos(ctx)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		ctx.AbortWithError(http.StatusInternalServerError, err)
 	}
-	c.JSON(http.StatusOK, todos)
+	ctx.JSON(http.StatusOK, todos)
 }

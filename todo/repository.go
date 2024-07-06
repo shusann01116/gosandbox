@@ -1,13 +1,18 @@
 package todo
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+	"sync"
+)
 
 type Repository interface {
-	ListTodos() ([]Item, error)
+	ListTodos(ctx context.Context) ([]Item, error)
 	AddTodos(todos ...Item) error
 }
 
 type inMemoryTodoRepo struct {
+	mu    sync.Mutex
 	todos []Item
 }
 
@@ -26,11 +31,13 @@ func initTodo() []Item {
 	return todos
 }
 
-func (i *inMemoryTodoRepo) ListTodos() ([]Item, error) {
+func (i *inMemoryTodoRepo) ListTodos(ctx context.Context) ([]Item, error) {
 	return i.todos, nil
 }
 
 func (i *inMemoryTodoRepo) AddTodos(todos ...Item) error {
+	i.mu.Lock()
+	defer i.mu.Unlock()
 	i.todos = append(i.todos, todos...)
 	return nil
 }

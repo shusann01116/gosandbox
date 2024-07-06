@@ -1,6 +1,9 @@
 package todo
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+)
 
 type Service struct {
 	repo Repository
@@ -12,7 +15,7 @@ func NewService(repo Repository) Service {
 	}
 }
 
-func (s *Service) AddTodo(todo Item) error {
+func (s *Service) AddTodo(ctx context.Context, todo Item) error {
 	if err := todo.IsValid(); err != nil {
 		return fmt.Errorf("failed to add todo: %w", err)
 	}
@@ -21,8 +24,8 @@ func (s *Service) AddTodo(todo Item) error {
 	return nil
 }
 
-func (s *Service) GetTodos() ([]Item, error) {
-	todos, err := s.repo.ListTodos()
+func (s *Service) GetTodos(ctx context.Context) ([]Item, error) {
+	todos, err := s.repo.ListTodos(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get Todos: %w", err)
 	}
